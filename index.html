@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Match Card Medley</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.png" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module" src="assets/js/game.js" defer></script>
+</head>
+<body>
+
+    <audio id="tune" src="assets/audio/tune.mp3" preload="auto"></audio>
+
+    <header class="text-center my-3">
+        <h1>Match Card Medley</h1>
+        <div id="date" class="date-display mb-2"></div>
+        <div id="player-name-display" class="player-name fw-bold mb-2"></div>
+
+        <div class="controls my-2">
+            <button id="pause" class="btn btn-outline-secondary">⏸️</button>
+            <button id="play" class="btn btn-outline-success" style="display: none;">▶️</button>
+            <button id="refresh-button" class="btn btn-outline-primary">🔄 Shuffle</button>
+            <button id="reset-user-data" class="btn btn-outline-danger">🗑️ Reset</button>
+            <button id="showRulesBtn" class="btn btn-info">How to Play</button>
+        </div>
+
+        <div class="game-stats my-2">
+            <span class="flips me-3">Flips: <b>0</b></span>
+            <span class="matched me-3">Matched: <b>0</b></span>
+            <span id="time">00:00</span>
+            <span class="fw-bold text-success"></span>
+        </div>
+        <div class="text-center my-3">
+            <span class="badge bg-success fs-5" id="score-display">Score: 0</span>
+        </div>
+
+        <h2 id="levelText" class="text-center fs-5 fs-md-4">Select a level to begin</h2>
+        <div class="level-buttons">
+            <button class="btn-level btn btn-primary btn-sm" value="easy">Easy</button>
+            <button class="btn-level btn btn-primary btn-sm" value="med">Medium</button>
+            <button class="btn-level btn btn-primary btn-sm" value="hard">Hard</button>
+        </div>
+    </header>
+
+    <main>
+        <div id="game-board" class="game-board d-flex flex-wrap justify-content-center">
+            </div>
+    </main>
+
+    <div class="modal fade" id="rulesModal" tabindex="-1" aria-labelledby="rulesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="rulesModalLabel"><i class="bi bi-info-circle-fill me-2"></i>How to Play</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">🧠 Flip two cards to try and find a matching pair.</li>
+                        <li class="list-group-item">🃏 If they match, they stay flipped. If not, they flip back.</li>
+                        <li class="list-group-item">🎯 Match all pairs as quickly and efficiently as possible.</li>
+                        <li class="list-group-item">🔊 Background music and sound effects can be toggled with the play/pause button.</li>
+                        <li class="list-group-item">📈 Your score is based on matched pairs, number of flips and the time taken which decreases with every unmatched flip.</li>
+                        <li class="list-group-item">👤 Scores are saved per player and level — try to beat your best!</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Got it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="winModal" tabindex="-1" aria-labelledby="winModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content text-center p-4 border-success border-3">
+                <div class="modal-header bg-success text-white rounded-top">
+                    <h5 class="modal-title w-100" id="winModalLabel">🎉 New High Score!</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="winMessage" class="fs-5">Well done, champ!</p>
+                    <img src="assets/images/confetti.gif" alt="Celebration" class="img-fluid rounded shadow" />
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="lossModal" tabindex="-1" aria-labelledby="lossModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content text-center p-4 border-warning border-3">
+                <div class="modal-header bg-warning text-dark rounded-top">
+                    <h5 class="modal-title w-100" id="lossModalLabel">Not Your Best...</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="lossMessage" class="fs-5">Give it another go!</p>
+                    <img src="assets/images/try-again.gif" alt="Try again" class="img-fluid rounded shadow" />
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">Retry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4 text-center">
+                <h5 class="modal-title mb-3">Welcome!</h5>
+                <p>Enter your name to start playing:</p>
+                <input type="text" id="usernameInput" class="form-control mb-3" placeholder="Your name" />
+                <button class="btn btn-primary" id="saveUsernameBtn">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resetConfirmModal" tabindex="-1" aria-labelledby="resetConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="resetConfirmModalLabel">Confirm Account Reset</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete your account? <strong>All scores will be permanently lost.</strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="confirmResetBtn" type="button" class="btn btn-danger">Yes, delete everything</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</body>
+</html>
