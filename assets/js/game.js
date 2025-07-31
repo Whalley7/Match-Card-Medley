@@ -194,7 +194,7 @@ export class CardGame {
             card.dataset.image = imagePath;
             card.innerHTML = `
                 <div class="card-inner">
-                    <div class="card-front"><img src="assets/images/back-img/logo.png" alt="front" /></div>
+                    <div class="card-front"  "alt="front"><h2>?</h2"></div>
                     <div class="card-back"><img src="${imagePath}" alt="back" /></div>
                 </div>`;
             container.appendChild(card);
@@ -262,39 +262,42 @@ export class CardGame {
         }
     }
 
-    checkGameEnd() {
-        this.stopTimer();
-        this.updateLiveScore();
-        this.launchConfetti();
-       
-        const oldScore = updateStoredScores(this.username, this.level, this.newScore);
-        if (this.newScore > oldScore) {
-             playSound('applause');
-            showWinModal(this.username, this.level, this.newScore);
-        } else {
-            playSound('wrong_answer');
-            showLossModal(this.username, this.level, this.newScore, oldScore);
-        }
-        this.disableDeck = true;
-    }
+   checkGameEnd() {
+    this.stopTimer();
+    this.updateLiveScore(); // This updates this.newScore to the final score
+    this.launchConfetti();
 
-    shuffleDeck() {
-        this.flips = 0;
-        this.matchedPairs = 0;
-        this.cardOne = null;
-        this.cardTwo = null;
-        this.disableDeck = false;
-        this.alreadyStarted = false;
-        this.newScore = 0;
-        this.flipsTag.textContent = "0";
-        this.matchTag.textContent = "0";
-        this.timeTag.textContent = "00:00";
-        this.stopTimer();
-        this.tune.pause();
-        this.tune.currentTime = 0;
-        this.updateLiveScore();
-        this.createCards();
+    // This retrieves the stored high score for the current level and username
+    const oldScore = updateStoredScores(this.username, this.level, this.newScore);
+
+    if (this.newScore > oldScore) {
+        playSound('applause');
+        // This is where the magic happens for displaying the score
+        showWinModal(this.username, this.level, this.newScore);
+    } else {
+        playSound('wrong_answer');
+        // This is where the magic happens for displaying the score
+        showLossModal(this.username, this.level, this.newScore, oldScore);
     }
+    this.disableDeck = true;
+}
+    shuffleDeck() {
+    this.flips = 0;
+    this.matchedPairs = 0;
+    this.cardOne = null;
+    this.cardTwo = null;
+    this.disableDeck = false;
+    this.alreadyStarted = false;
+    this.newScore = 0; // <<< Already here, which is great!
+    this.flipsTag.textContent = "0";
+    this.matchTag.textContent = "0";
+    this.timeTag.textContent = "00:00";
+    this.stopTimer();
+    this.tune.pause();
+    this.tune.currentTime = 0;
+    this.updateLiveScore(); // <<< This also sets the display
+    this.createCards();
+}
 
     startTimer() {
         this.startTime = Date.now();
